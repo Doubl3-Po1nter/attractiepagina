@@ -26,11 +26,27 @@ if($action == 'create')
 
     if(isset($_POST['fast_pass']))
     {
-        $fast_pass = true;
+        $fast_pass = 1;
     }
     else
     {
-        $fast_pass = false;
+        $fast_pass = 0;
+    }
+
+    $description = $_POST['description'];
+    if(empty($description))
+    {
+        $errors[] = "Vul een description in!";
+    }
+
+    $min_length = $_POST['min_length'];
+    if(empty($min_length))
+    {
+        $errors[] = "Vul een minimale lengte in!";
+    }
+    elseif(!is_numeric($min_length))
+    {
+        $errors[] = "Minimale lengte moet een getal zijn!";
     }
 
     $target_dir = "../../img/attracties/";
@@ -52,13 +68,15 @@ if($action == 'create')
 
     //Query
     require_once 'conn.php';
-    $query = "INSERT INTO rides (title, themeland, fast_pass, img_file) VALUES(:title, :themeland, :fast_pass, :img_file)";
+    $query = "INSERT INTO rides (title, themeland, fast_pass, img_file, description, min_length) VALUES(:title, :themeland, :fast_pass, :img_file, :description, :min_length)";
     $statement = $conn->prepare($query);
     $statement->execute([
         ":title" => $title,
         ":themeland" => $themeland,
         ":fast_pass" => $fast_pass,
         ":img_file" => $target_file,
+        ":description" => $description,
+        "min_length" => $min_length,
     ]);
 
     header("Location: ../attracties/index.php");
@@ -68,15 +86,34 @@ if($action == 'create')
 if($action == "update")
 {
     $id = $_POST['id'];
+    $description = $_POST['description'];
     $title = $_POST['title'];
+    if(empty($title))
+    {
+        $errors[] = "Vul een titel in!";
+    }
     $themeland = $_POST['themeland'];
+    if(empty($themeland))
+    {
+        $errors[] = "Vul een thema in!";
+    }
+    $min_length = $_POST['min_length'];
+    if(empty($min_length))
+    {
+        $errors[] = "Vul een minimale lengte in!";
+    }
+    elseif(!is_numeric($min_length))
+    {
+        $errors[] = "Minimale lengte moet een getal zijn!";
+    }
+
     if(isset($_POST['fast_pass']))
     {
-        $fast_pass = true;
+        $fast_pass = 1;
     }
     else
     {
-        $fast_pass = false;
+        $fast_pass = 0;
     }
 
     if(empty($_FILES['img_file']['name']))
@@ -105,14 +142,16 @@ if($action == "update")
 
     //Query
     require_once 'conn.php';
-    $query = "UPDATE rides SET title = :title, themeland = :themeland, fast_pass = :fast_pass, img_file = :img_file WHERE id = :id";
+    $query = "UPDATE rides SET title = :title, themeland = :themeland, fast_pass = :fast_pass, description = :description, min_length = :min_length, img_file = :img_file WHERE id = :id";
     $statement = $conn->prepare($query);
     $statement->execute([
         ":title" => $title,
         ":themeland" => $themeland,
         ":fast_pass" => $fast_pass,
         ":img_file" => $target_file,
-        ":id" => $id
+        ":id" => $id,
+        ":description" => $description,
+        ":min_length" => $min_length,
     ]);
 
     header("Location: ../attracties/index.php");

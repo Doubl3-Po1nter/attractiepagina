@@ -23,7 +23,7 @@ if(!isset($_SESSION['user_id']))
     <link rel="icon" href="<?php echo $base_url; ?>/favicon.ico" type="image/x-icon" />
 </head>
 
-<body>
+<body> 
 
     <?php require_once '../../header.php'; ?>
     <div class="container">
@@ -36,6 +36,14 @@ if(!isset($_SESSION['user_id']))
             <div class="form-group">
                 <label for="title">Titel:</label>
                 <input type="text" name="title" id="title" class="form-input">
+            </div>
+            <div class="form-group">
+                <label for="description">beschrijving:</label>
+                <textarea name="description" id="description" class="form-input" rows="4" cols="50"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="min_length">Minimale lengte:</label>
+                <input type="text" name="min_length" id="min_length" class="form-input">
             </div>
             <div class="form-group">
                 <label for="themeland">Themagebied:</label>
@@ -57,6 +65,8 @@ if(!isset($_SESSION['user_id']))
             </div>
 
             <input type="submit" value="Attractie aanmaken">
+            <button class="return-btn" type="button" ><a href="/attractiepagina/admin/attracties/index.php">Terug naar takenlijst</a></button>
+            
 
 
     </div>

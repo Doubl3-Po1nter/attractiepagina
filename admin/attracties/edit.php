@@ -39,7 +39,7 @@ if(!isset($_SESSION['user_id']))
         $ride = $statement->fetch(PDO::FETCH_ASSOC);
         ?>
 
-        <form action="../backend/ridesController.php" method="POST">
+        <form action="../backend/ridesController.php" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="action" value="update">
             <input type="hidden" name="id" value="<?php echo $id; ?>">
             <input type="hidden" name="old_img" value="<?php echo $ride['img_file']; ?>">
@@ -47,6 +47,14 @@ if(!isset($_SESSION['user_id']))
             <div class="form-group">
                 <label for="title">Titel:</label>
                 <input type="text" name="title" id="title" class="form-input" value="<?php echo $ride['title']; ?>">
+            </div>
+            <div class="form-group">
+                <label for="description">beschrijving:</label>
+                <textarea name="description" id="description" class="form-input" rows="4" cols="50" ><?php echo $ride['description']; ?></textarea> 
+            </div>
+            <div class="form-group">
+                <label for="min_length">Minimale lengte:</label>
+                <input type="text" name="min_length" id="min_length" class="form-input" value="<?php echo $ride['min_length']; ?>">
             </div>
             <div class="form-group">
                 <label for="themeland">Themagebied:</label>
@@ -74,8 +82,12 @@ if(!isset($_SESSION['user_id']))
         <form action="../backend/ridesController.php" method="POST">
             <input type="hidden" name="action" value="delete">
             <input type="hidden" name="id" value="<?php echo $id; ?>">
-            <input type="submit" value="Verwijderen">
+            <input type="submit" onclick="return confirm('Weet je zeker dat je dit wilt verwijderen?');" value="Verwijderen">
+            <button class="return-btn" type="button" ><a href="/attractiepagina/admin/attracties/index.php">Terug naar takenlijst</a></button>
+
         </form>
+
+        
 
     </div>
 

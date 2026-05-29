@@ -30,11 +30,49 @@ if(!isset($_SESSION['user_id']))
 
         <a href="create.php">Nieuwe attractie maken &gt;</a>
 
+        <form method="POST">
+            <select name="sort">
+                <option value="">Kies een themagebied</option>
+                <option value="familyland">familyland</option>
+                <option value="waterland">waterland</option>
+                <option value="adventureland">adventureland</option>
+            </select>
+
+            <button type="submit">Sorteren</button>
+        </form>
+
+
+        <?php require_once '../backend/conn.php'; 
+        $themeland = $_GET['themeland'] ?? '';
+        ?>
+
+        <form method="GET" class="filter_form">
+
+                <label>Themagebied:</label>
+                <select name="themeland">
+                    <option value="">Alles</option>
+                    <option value="familyland" <?= (($_GET['themeland'] ?? '') == 'familyland') ? 'selected' : '' ?>>familyland</option>
+                    <option value="waterland" <?= (($_GET['themeland'] ?? '') == 'waterland') ? 'selected' : '' ?>>waterland</option>
+                    <option value="adventureland" <?= (($_GET['themeland'] ?? '') == 'adventureland') ? 'selected' : '' ?>>adventureland</option>
+                </select>
+
+                <button type="submit">Filter</button>
+            </form>
         <?php
         require_once '../backend/conn.php';
-        $query = "SELECT * FROM rides";
-        $statement = $conn->prepare($query);
-        $statement->execute();
+        if ($themeland !== '')
+        {
+            $query = "SELECT * FROM rides WHERE themeland = :themeland ORDER BY title ASC";
+            $statement = $conn->prepare($query);
+            $statement->execute([
+                ":themeland" => $themeland
+            ]);
+        } else 
+        {
+            $query = "SELECT * FROM rides ORDER BY title ASC";
+            $statement = $conn->prepare($query);
+            $statement->execute();
+        }
         $rides = $statement->fetchAll(PDO::FETCH_ASSOC);
         ?>
 
@@ -43,17 +81,31 @@ if(!isset($_SESSION['user_id']))
                 <th>Titel</th>
                 <th>Themagebied</th>
                 <th>Min. lengte</th>
+                <th>Beschrijving</th>
                 <th>Fastpass</th>
+                <th>Edit</th>
             </tr>
             <?php foreach($rides as $ride): ?>
                 <tr>
                     <td><?php echo $ride['title']; ?></td>
                     <td><?php echo $ride['themeland']; ?></td>
                     <td><?php echo $ride['min_length']; ?></td>
-                    <td><?php echo $ride['fast_pass']; ?></td>
+                    <td><?php echo $ride['description']; ?></td>
+                    <td>
+                        <?php
+                        if($ride['fast_pass']) {
+                            echo 'Yes';
+                        } else {
+                            echo 'No';
+                        }
+                        ?>
+                    </td>
                     <td><a href="edit.php?id=<?php echo $ride['id']; ?>">aanpassen</a></td>
                 </tr>
             <?php endforeach; ?>
+            <p>De lijst bevat <?php echo count($rides); ?> attracties.</p>
+
+            
         </table>
 
 
